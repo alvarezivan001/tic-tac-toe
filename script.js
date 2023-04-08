@@ -120,6 +120,8 @@ gridSquares.forEach((square) => {
                     if(playerOnesTurn === true)
                     {
                         square.textContent = playerOne.sign;
+                        let squareId = square.getAttribute('id');
+                        updateArray(squareId,gameArray,playerOne.sign);
                         square.removeEventListener;
                         playerOnesTurn = false;
                         nextTurn(playerTwo);
@@ -127,13 +129,15 @@ gridSquares.forEach((square) => {
                     else
                     {
                         square.textContent = playerTwo.sign;
+                        let squareId = square.getAttribute('id');
+                        updateArray(squareId, gameArray, playerTwo.sign); 
                         square.removeEventListener;
                         playerOnesTurn = true;
                         nextTurn(playerOne);
                     }
                 }
 
-
+            gameState();
         });
 });
 
@@ -141,4 +145,104 @@ const nextTurn = (player) => {
     const turnSign = document.querySelector('#turn_sign');
     turnSign.textContent = player.sign;
 
+}
+const updateArray = (idName, array, sign) => {
+    gameArray[Number(idName.charAt(5))-1] = sign;
+}
+const gameState = () => {
+    if(gameTie() === true)
+    {
+        gameOver(true, false);
+    }
+    if(gameWinner() === true)
+    {
+        gameOver(false, true);
+    }
+}
+const gameTie = () => {
+
+    let tie = true;
+    for(let i = 0; i < gameArray.length; i++){
+        if(gameArray[i] === ' ') 
+        {
+            tie = false;
+            break;
+        }
+    }
+    return tie;
+}
+let signPosition = 0;
+const gameWinner = () => {
+
+    let winner = false;
+   
+    // if 012   345     678 have matching signs = winner
+    if(fullSeq(0,1,2) === true)
+    {   if(matchSigns(0,1,2) === true)
+        {winner = true; signPosition = 0;}
+    }
+    else if(fullSeq(3,4,5) === true){       
+        if(matchSigns(3,4,5) === true)
+        {winner = true; signPosition = 3;}
+    }
+    else if(fullSeq(6,7,8) === true)
+    {   if(matchSigns(6,7,8) === true)
+        {winner = true; signPosition = 6;}
+    }
+
+
+    // if 036   147     258 have matching signs = winner
+    if(fullSeq(0,3,6) === true)
+    {   if(matchSigns(0,3,6) === true)
+        {winner = true; signPosition = 0}
+    }
+    else if(fullSeq(1,4,7) === true){       
+        if(matchSigns(1,4,7) === true)
+        {winner = true; signPosition = 1;}
+    }
+    else if(fullSeq(2,5,8) === true)
+    {   if(matchSigns(2,5,8) === true)
+        {winner = true; signPosition = 2;}
+    }
+
+    // if 048   or  246 have matching signs = winner
+    if(fullSeq(0,4,8) === true)
+    {   if(matchSigns(0,4,8) === true)
+        {winner = true; signPosition = 0;}
+    }
+    else if(fullSeq(2,4,6) === true){       
+        if(matchSigns(2,4,6) === true)
+        {winner = true; signPosition = 2;}
+    }
+    return winner;
+}
+
+const gameOver = (tie, winner) => {
+
+    const gameResult = document.querySelector('#game_result');
+    if(tie === true)
+    {
+        gameResult.textContent = 'Game Over! Tie Game.';
+    }
+    if(winner === true)
+    {
+        gameResult.textContent = 'Game Over! Winner is: ' + gameArray[signPosition] + '.';
+    }
+} 
+
+const fullSeq = (pos0, pos1, pos2) => {
+    let seqFull = false;
+    if(gameArray[pos0] !== ' ' && gameArray[pos1] !== ' ' && gameArray[pos2]!==  ' ')
+    {
+        seqFull = true;
+    }
+    return seqFull;
+}
+const matchSigns = (pos0, pos1, pos2) => {
+    let matching = false;
+    if(gameArray[pos0] === gameArray[pos1] && gameArray[pos0] === gameArray[pos2])
+    {
+        matching = true;
+    }
+    return matching;
 }
