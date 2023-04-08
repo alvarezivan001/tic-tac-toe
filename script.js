@@ -91,3 +91,54 @@
 //     //check if 
 // }
 
+
+const playerOne = {
+    sign: "x",
+    bot: false,
+    score: 0
+};
+//lower case sign since easier to type
+const playerTwo = {
+    sign: "o",
+    bot: false,
+    score: 0
+}
+let gameArray = new Array();
+for(let i = 0; i < 9; i++)
+{gameArray.push(' ');}
+
+let playerOnesTurn = true;
+
+const gridSquares = document.querySelectorAll('.grid_squares');
+
+gridSquares.forEach((square) => {
+
+        square.addEventListener('click', () => {
+
+            if(square.textContent === ' ')
+                {
+                    if(playerOnesTurn === true)
+                    {
+                        square.textContent = playerOne.sign;
+                        square.removeEventListener;
+                        playerOnesTurn = false;
+                        nextTurn(playerTwo);
+                    } 
+                    else
+                    {
+                        square.textContent = playerTwo.sign;
+                        square.removeEventListener;
+                        playerOnesTurn = true;
+                        nextTurn(playerOne);
+                    }
+                }
+
+
+        });
+});
+
+const nextTurn = (player) => {
+    const turnSign = document.querySelector('#turn_sign');
+    turnSign.textContent = player.sign;
+
+}
