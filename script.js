@@ -111,44 +111,52 @@ let playerOnesTurn = true;
 
 const gridSquares = document.querySelectorAll('.grid_squares');
 
-gridSquares.forEach((square) => {
+const executeListeners = () => {
+    gridSquares.forEach((square) => {
 
-        square.addEventListener('click', () => {
+            square.addEventListener('click', () => {
 
-            if(square.textContent === ' ')
-                {
-                    if(playerOnesTurn === true)
+                if(square.textContent === ' ')
                     {
-                        square.textContent = playerOne.sign;
-                        let squareId = square.getAttribute('id');
-                        updateArray(squareId,gameArray,playerOne.sign);
-                        square.removeEventListener;
-                        playerOnesTurn = false;
-                        nextTurn(playerTwo);
-                    } 
-                    else
-                    {
-                        square.textContent = playerTwo.sign;
-                        let squareId = square.getAttribute('id');
-                        updateArray(squareId, gameArray, playerTwo.sign); 
-                        square.removeEventListener;
-                        playerOnesTurn = true;
-                        nextTurn(playerOne);
+                        if(playerOnesTurn === true)
+                        {
+                            square.textContent = playerOne.sign;
+                            let squareId = square.getAttribute('id');
+                            updateArray(squareId,gameArray,playerOne.sign);
+                            square.removeEventListener;
+                            playerOnesTurn = false;
+                            nextTurn(playerTwo);
+                        } 
+                        else
+                        {
+                            square.textContent = playerTwo.sign;
+                            let squareId = square.getAttribute('id');
+                            updateArray(squareId, gameArray, playerTwo.sign); 
+                            square.removeEventListener;
+                            playerOnesTurn = true;
+                            nextTurn(playerOne);
+                        }
                     }
-                }
 
-            gameState();
-        });
-});
+                gameState();
+            });
+    });
+};
+executeListeners();
 
+// updates text to note whose turn is it
 const nextTurn = (player) => {
     const turnSign = document.querySelector('#turn_sign');
     turnSign.textContent = player.sign;
 
 }
+
+// updates the array given a sign
 const updateArray = (idName, array, sign) => {
     gameArray[Number(idName.charAt(5))-1] = sign;
 }
+
+//checks possibility of tie or winner
 const gameState = () => {
     if(gameTie() === true)
     {
@@ -159,6 +167,7 @@ const gameState = () => {
         gameOver(false, true);
     }
 }
+//checks if tie game: if all squares filled
 const gameTie = () => {
 
     let tie = true;
@@ -172,6 +181,8 @@ const gameTie = () => {
     return tie;
 }
 let signPosition = 0;
+
+// algorithm to check possible consecutive signs
 const gameWinner = () => {
 
     let winner = false;
@@ -217,6 +228,7 @@ const gameWinner = () => {
     return winner;
 }
 
+// checks if the game over is for a tie or winner
 const gameOver = (tie, winner) => {
 
     const gameResult = document.querySelector('#game_result');
@@ -230,6 +242,7 @@ const gameOver = (tie, winner) => {
     }
 } 
 
+//checks if there is a 3 consecutive signs
 const fullSeq = (pos0, pos1, pos2) => {
     let seqFull = false;
     if(gameArray[pos0] !== ' ' && gameArray[pos1] !== ' ' && gameArray[pos2]!==  ' ')
@@ -238,6 +251,8 @@ const fullSeq = (pos0, pos1, pos2) => {
     }
     return seqFull;
 }
+
+//checks if the cons. signs are the same
 const matchSigns = (pos0, pos1, pos2) => {
     let matching = false;
     if(gameArray[pos0] === gameArray[pos1] && gameArray[pos0] === gameArray[pos2])
@@ -246,3 +261,33 @@ const matchSigns = (pos0, pos1, pos2) => {
     }
     return matching;
 }
+
+// restart button
+const btnRestart = document.querySelector('#button_restart');
+
+
+const restartGame = () => {
+    resetArray();
+    resetBoard();
+    signPosition = 0;
+    playerOnesTurn = true; 
+}
+
+const resetArray = () => {
+    for(let i = 0; i< gameArray.length; i++)
+    {
+        gameArray[i] = ' ';
+    }
+}
+
+const resetBoard = () => {
+    gridSquares.forEach((square) => {
+        square.textContent = ' '
+    })
+    const turnSign = document.querySelector('#turn_sign');
+    turnSign.textContent = 'x';
+    const gameResult = document.querySelector('#game_result');
+    gameResult.textContent = 'Game not over.';
+}
+
+btnRestart.addEventListener('click', () => { restartGame()});
